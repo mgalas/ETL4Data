@@ -40,17 +40,20 @@ def main(argv):
 
     cmd = []
     cmd.append("DROP TABLE IF EXISTS osmdata;")
-    #cmd.append("hive -e 'CREATE TABLE osmdata(osm_content STRING) STORED AS TEXTFILE;'")
-    #cmd.append("hive -e 'LOAD DATA LOCAL INPATH \"/home/cloudera/Documents/opendata/map.xml\" OVERWRITE INTO TABLE osmdata;'")
-    #cmd.append("hive -e 'DROP TABLE IF EXISTS osmnodes;'")
-    #cmd.append("hive -e 'DROP TABLE IF EXISTS osmways;'")
-    #cmd.append("hive -e 'DROP TABLE IF EXISTS osmrelations;'")
+    cmd.append("CREATE TABLE osmdata(osm_content STRING) STORED AS TEXTFILE;")
+    cmd.append("LOAD DATA LOCAL INPATH '" + data_path + "' OVERWRITE INTO TABLE osmdata;")
+    cmd.append("DROP TABLE IF EXISTS osmnodes;")
+    cmd.append("DROP TABLE IF EXISTS osmways;")
+    cmd.append("DROP TABLE IF EXISTS osmrelations;")
+
+    program = ["hive", "-e", ""]
 
     for c in cmd:
         print("Executing: " + c)
+        program[2] = c
 
         try:
-            output = subprocess.check_output(["hive", "-e", "DROP TABLE IF EXISTS osmdata;"])
+            output = subprocess.check_output(program)
             print(output)
         except subprocess.CalledProcessError as e:
             print(e.output)
