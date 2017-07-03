@@ -50,7 +50,7 @@ def main(argv):
         print("Executing: " + c)
 
         try:
-            output = subprocess.check_output(["hive", "-e", "'DROP TABLE IF EXISTS osmdata;'"])
+            output = subprocess.check_output(["hive", "-e", "DROP TABLE IF EXISTS osmdata;"])
             print(output)
         except subprocess.CalledProcessError as e:
             print(e.output)
