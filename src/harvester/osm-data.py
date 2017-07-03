@@ -14,7 +14,7 @@ def main(argv):
     directory = os.path.join(argv[0])
     download_path = os.path.join(directory, "planet.osm.bz2")
     data_path = os.path.join(directory, "planet.xml")
-    jar_path = "/home/ulincero/jars/OSM2Hive.jar"
+    jar_path = "/home/ulincero/Documents/ETL4Data/jars/OSM2Hive.jar"
 
     if argv[1] == "yes":
 
@@ -45,6 +45,15 @@ def main(argv):
     cmd.append("DROP TABLE IF EXISTS osmnodes;")
     cmd.append("DROP TABLE IF EXISTS osmways;")
     cmd.append("DROP TABLE IF EXISTS osmrelations;")
+    cmd.append("ADD JAR " + jar_path +  "; " + \
+               "CREATE TEMPORARY FUNCTION OSMImportNodes AS 'info.pavie.osm2hive.controller.HiveNodeImporter'; " + \
+               "CREATE TABLE osmnodes AS SELECT OSMImportNodes(osm_content) FROM osmdata;")
+    cmd.append("ADD JAR " + jar_path +  "; " + \
+               "CREATE TEMPORARY FUNCTION OSMImportWays AS 'info.pavie.osm2hive.controller.HiveWayImporter'; " + \
+               "CREATE TABLE osmways AS SELECT OSMImportWays(osm_content) FROM osmdata;")
+    cmd.append("ADD JAR " + jar_path +  "; " + \
+               "CREATE TEMPORARY FUNCTION OSMImportRelations AS 'info.pavie.osm2hive.controller.HiveRelationImporter'; " + \
+               "CREATE TABLE osmrelations AS SELECT OSMImportRelations(osm_content) FROM osmdata;")
 
     program = ["hive", "-e", ""]
 
@@ -58,44 +67,6 @@ def main(argv):
         except subprocess.CalledProcessError as e:
             print(e.output)
 
-    exit()
-
-    cmd = "hive -e 'ADD JAR /home/cloudera/jars/OSM2Hive.jar; " + \
-                   "CREATE TEMPORARY FUNCTION OSMImportNodes AS \"info.pavie.osm2hive.controller.HiveNodeImporter\"; " + \
-                   "CREATE TABLE osmnodes AS SELECT OSMImportNodes(osm_content) FROM osmdata;'"
-
-    print("Executing: " + cmd)
-    status, output = commands.getstatusoutput(cmd)
-        
-    if status == 0:
-        print(output)
-    else:
-        print(output)
-
-    cmd = "hive -e 'ADD JAR /home/cloudera/jars/OSM2Hive.jar; " + \
-          "CREATE TEMPORARY FUNCTION OSMImportWays AS \"info.pavie.osm2hive.controller.HiveWayImporter\";" + \
-          "CREATE TABLE osmways AS SELECT OSMImportWays(osm_content) FROM osmdata;'"
-
-    print("Executing: " + cmd)
-    status, output = commands.getstatusoutput(cmd)
-        
-    if status == 0:
-        print(output)
-    else:
-        print(output)
-
-
-    cmd = "hive -e 'ADD JAR /home/cloudera/jars/OSM2Hive.jar; " + \
-          "CREATE TEMPORARY FUNCTION OSMImportRelations AS \"info.pavie.osm2hive.controller.HiveRelationImporter\";" + \
-          "CREATE TABLE osmrelations AS SELECT OSMImportRelations(osm_content) FROM osmdata;'"
-
-    print("Executing: " + cmd)
-    status, output = commands.getstatusoutput(cmd)
-        
-    if status == 0:
-        print(output)
-    else:
-        print(output)
        
 if __name__ == "__main__":
     main(sys.argv[1:])
