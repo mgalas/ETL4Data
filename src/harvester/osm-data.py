@@ -8,7 +8,7 @@ import requests
 import bz2
 
 def main(argv):
-
+    t0 = time()
     url = "http://download.geofabrik.de/europe/great-britain/england/greater-london-latest.osm.bz2"
     directory = os.path.join(argv[0])
     download_path = os.path.join(directory, "planet.osm.bz2")
@@ -54,7 +54,7 @@ def main(argv):
                "CREATE TEMPORARY FUNCTION OSMImportRelations AS 'info.pavie.osm2hive.controller.HiveRelationImporter'; " + \
                "CREATE TABLE osmrelations AS SELECT OSMImportRelations(osm_content) FROM osmdata;")
 
-    program = ["hive", "-e", ""]
+    program = ["sudo","-u","mapred","hive", "-e", ""]
 
     for c in cmd:
         print("Executing: " + c)
@@ -65,6 +65,9 @@ def main(argv):
             print(output)
         except subprocess.CalledProcessError as e:
             print(e.output)
+
+    elapsed = time() - t0
+    print("Total elapsed time: " + str(round(elapsed,3)))
 
        
 if __name__ == "__main__":
