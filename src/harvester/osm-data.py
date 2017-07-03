@@ -58,7 +58,7 @@ def main(argv):
 
     for c in cmd:
         print("Executing: " + c)
-        program[2] = c
+        program[5] = c
 
         try:
             output = subprocess.check_output(program)
