@@ -1,0 +1,33 @@
+-CKAN API call to update osm-planet package with extras "key"-"value":
+curl http://udltest1.cs.ucl.ac.uk/api/rest/dataset/osm-planet -d '{"extras":{"key":"value"}}' -H "Authorization:8073ea5f-ce3a-4806-b3d3-f27286d9d923"
+
+-Hive CREATE TABLE statements for 'errors' and 'stats' tables:
+
+CREATE TABLE `errors`(
+  `error_type` string,
+  `object_type` string,
+  `object_id` string,
+  `description` string,
+  `last_checked` string)
+CLUSTERED BY (
+  object_type)
+INTO 3 BUCKETS
+ROW FORMAT SERDE
+  'org.apache.hadoop.hive.ql.io.orc.OrcSerde'
+STORED AS INPUTFORMAT
+  'org.apache.hadoop.hive.ql.io.orc.OrcInputFormat'
+OUTPUTFORMAT
+  'org.apache.hadoop.hive.ql.io.orc.OrcOutputFormat'
+LOCATION
+  'hdfs://udltest3.cs.ucl.ac.uk:8020/user/hive/warehouse/errors'
+TBLPROPERTIES (
+  'COLUMN_STATS_ACCURATE'='true',
+  'numFiles'='20',
+  'numRows'='303',
+  'rawDataSize'='0',
+  'totalSize'='10912',
+  'transactional'='true',
+  'transient_lastDdlTime'='1503059499');
+
+CREATE TABLE stats (stat string, value string, last_checked timestamp) CLUSTERED BY (stat)
+INTO 3 BUCKETS stored as orc TBLPROPERTIES ('transactional'='true');
