@@ -42,4 +42,3 @@ sudo -u mapred oozie job -oozie http://udltest2.cs.ucl.ac.uk:11000/oozie -config
 - [Running Jupter Notebook on Cloudera](https://blogs.msdn.microsoft.com/pliu/2016/06/19/run-jupyter-notebook-on-cloudera/)
 - [OSM quality assurance](https://github.com/keepright/keepright/tree/master/checks)
 - [MiniOozie](https://oozie.apache.org/docs/3.2.0-incubating/ENG_MiniOozie.html)
-- 
